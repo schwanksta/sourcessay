@@ -1,0 +1,7 @@
+*.pyc
+*.swp
+.DS_Store
+settings_dev.py
+settings_local.py
+settings_prod.py
+database.db
