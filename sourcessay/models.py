@@ -75,11 +75,6 @@ class Byline(models.Model):
 
 class Item(models.Model):
     source_feed = models.ForeignKey(Source)
-    NEWS_OUTLET_CHOICES = (
-        ("new-york-times", "The New York Times"),
-        ("los-angeles-times", "The Los Angeles Tims"),
-        ("the-guardian", "The Guardian")
-    )
     news_outlet = models.ForeignKey(Outlet)
     byline = models.ManyToManyField(Byline)
     title = models.CharField(max_length=500)
