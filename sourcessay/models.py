@@ -25,18 +25,20 @@ class Source(models.Model):
     def get_news_outlet(self, url):
         for outlet_url, choice in self.NEWS_OUTLET_URLS:
             if outlet_url in url:
-                return choice
+                return choice, outlet_url
+        return (None, None)
 
     def process_feed(self):
         feed = BaseFeed(self)
         data_list = feed.data_list
         for data in data_list:
             url = data.get('url')
-            news_outlet = self.get_news_outlet(url)
+            news_outlet, outlet_url = self.get_news_outlet(url)
             if not news_outlet:
                 continue
             parser = getattr(parsers, "%sParser" % news_outlet)
             parsed = parser(url)
+            outlet_obj = Outlet.objects.get(url=outlet_url)
             print parsed.full_url
             anonymous = parsed.uses_anonymous()
             print anonymous
@@ -47,7 +49,7 @@ class Source(models.Model):
             i = Item(
                 url = parsed.full_url,
                 title = data.get('title'),
-                news_outlet = news_outlet,
+                news_outlet = outlet_obj,
                 source_feed = data.get('source'),
                 line_used = anonymous
             )
@@ -56,16 +58,30 @@ class Source(models.Model):
     def __unicode__(self):
         return self.name
 
+class Outlet(models.Model):
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255)
+    url = models.CharField(max_length=500)
+
+    def __unicode__(self):
+        return self.name
+
+class Byline(models.Model):
+    name = models.CharField(max_length=255)
+    news_outlet = models.ForeignKey(Outlet)
+
+    def __unicode__(self):
+        return self.name
 
 class Item(models.Model):
     source_feed = models.ForeignKey(Source)
     NEWS_OUTLET_CHOICES = (
-        ("NYTimes", "The New York Times"),
-        ("LATimes", "The Los Angeles Tims"),
-        ("Guardian", "The Guardian")
+        ("new-york-times", "The New York Times"),
+        ("los-angeles-times", "The Los Angeles Tims"),
+        ("the-guardian", "The Guardian")
     )
-    news_outlet = models.CharField(choices=NEWS_OUTLET_CHOICES, max_length=255)
+    news_outlet = models.ForeignKey(Outlet)
+    byline = models.ManyToManyField(Byline)
     title = models.CharField(max_length=500)
     url = models.CharField(max_length=500)
     line_used = models.CharField(max_length=255)
-    byline = models.
