@@ -76,7 +76,7 @@ class Byline(models.Model):
 class Item(models.Model):
     source_feed = models.ForeignKey(Source)
     news_outlet = models.ForeignKey(Outlet)
-    byline = models.ManyToManyField(Byline)
+    byline = models.ManyToManyField(Byline, null=True, blank=True)
     title = models.CharField(max_length=500)
     url = models.CharField(max_length=500)
     line_used = models.CharField(max_length=255)
