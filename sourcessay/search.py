@@ -1,10 +1,13 @@
 import re
 
-# List lifted from March Schaver's
+# Original list lifted from March Schaver's
 # Anonymous Source Tracker: http://inkstainedwretch.com/anonymous
+# and modified with my own additions
 
 signs_of_weakness = [
     "sources say",
+    "according to two sources",
+    "the sources said",
     "asked not to be quoted by name",
     "did not wish to be identified",
     "did not want to be identified",
@@ -26,7 +29,9 @@ signs_of_weakness = [
     "declined to be named",
     "refused to be named",
     "wouldn't give his name",
+    "would not give his name",
     "wouldn't give her name",
+    "would not give her name",
     "spoke on background",
     "speaking on background",
     "spoke off the record",
