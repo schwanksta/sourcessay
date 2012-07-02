@@ -1,6 +1,6 @@
 import parsers
 from django.db import models
-from parsers.base import BaseFeed
+from parsers.base import BaseFeed, BaseParser
 
 class Source(models.Model):
     """
@@ -13,6 +13,7 @@ class Source(models.Model):
     )
     feed_handler = models.CharField(max_length=100,
         choices=FEED_HANDLER_CHOICES)
+
     NEWS_OUTLET_URLS = (
         ("nytimes.com", "NYTimes"),
         ("latimes.com", "LATimes"),
@@ -28,6 +29,13 @@ class Source(models.Model):
                 return choice, outlet_url
         return (None, None)
 
+    def parse(self, news_outlet, url):
+        try:
+            Parser = getattr(parsers, "%sParser" % news_outlet)
+        except:
+            Parser = BaseParser
+        return Parser(url)
+
     def process_feed(self):
         feed = BaseFeed(self)
         data_list = feed.data_list
@@ -36,8 +44,7 @@ class Source(models.Model):
             news_outlet, outlet_url = self.get_news_outlet(url)
             if not news_outlet:
                 continue
-            parser = getattr(parsers, "%sParser" % news_outlet)
-            parsed = parser(url)
+            parsed = self.parse(news_outlet, url)
             outlet_obj = Outlet.objects.get(url=outlet_url)
             print parsed.full_url
             anonymous = parsed.uses_anonymous()
@@ -54,6 +61,11 @@ class Source(models.Model):
                 line_used = anonymous
             )
             i.save()
+            for byline in data.get('authors'):
+                by, c = Author.objects.get_or_create(name=byline.title(), news_outlet=outlet_obj)
+                if c: by.save()
+                i.authors.add(by)
+            
     
     def __unicode__(self):
         return self.name
@@ -66,7 +78,7 @@ class Outlet(models.Model):
     def __unicode__(self):
         return self.name
 
-class Byline(models.Model):
+class Author(models.Model):
     name = models.CharField(max_length=255)
     news_outlet = models.ForeignKey(Outlet)
 
@@ -76,7 +88,13 @@ class Byline(models.Model):
 class Item(models.Model):
     source_feed = models.ForeignKey(Source)
     news_outlet = models.ForeignKey(Outlet)
-    byline = models.ManyToManyField(Byline, null=True, blank=True)
+    authors = models.ManyToManyField(Author, null=True, blank=True)
     title = models.CharField(max_length=500)
     url = models.CharField(max_length=500)
     line_used = models.CharField(max_length=255)
+
+    def get_byline(self):
+        return "By " + ", ".join([str(o) for o in self.authors.all()])
+
+    def __unicode__(self):
+        return "%s - %s" % (self.news_outlet, self.title)
