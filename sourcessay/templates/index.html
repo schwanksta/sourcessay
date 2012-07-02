@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for object in object_list %}
+        <ul>
+            <div>
+                <h3><a href="{{object.url}}">{{object.title}}</a></h3>
+                <p>{{object.get_byline}}</p>
+                <p>"{{object.line_used}}"</p>
+            </div>
+        </ul>
+    {% endfor %}
+{% endblock %}
