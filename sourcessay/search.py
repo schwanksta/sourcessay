@@ -5,6 +5,7 @@ import re
 
 signs_of_weakness = [
     "sources say",
+    "asked not to be quoted by name",
     "did not wish to be identified",
     "did not want to be identified",
     "declined to be identified",

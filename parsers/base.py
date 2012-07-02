@@ -1,3 +1,4 @@
+import re
 import pytz
 import random
 import string
@@ -102,6 +103,33 @@ class BaseFeed(object):
         except (IndexError, KeyError):
             return None
     
+    def get_authors(self, e):
+        byline = e.get('author')
+        if not "By" in byline:
+            # This is kinda crazy looking, but the 
+            # [i for s in str for i in s] will flatten a list of lists,
+            # and the map/split will just split out by commas and ands.
+            return [item for sublist in map(lambda s: s.split(' and '), byline.split(', ')) for item in sublist]
+        fallback_byline = re.compile("([\-\w.&; ]+)")
+        single_byline = re.compile("By ([\-\w.&; ]+)")
+        double_byline = re.compile("By ([\-\w.&; ]+) and ([\-\w.&; ]+)")
+        triple_byline = re.compile("By ([\-\w.&; ]+), ([\-\w.&; ]+) and ([\-\w.&; ]+)")
+        byline_res = (
+            triple_byline,
+            double_byline,
+            single_byline,
+            fallback_byline
+        )
+        # Scan through from more complex to less complex. Take
+        # first match, because single_byline will match the first
+        # name from both double and triples.
+        for regex in byline_res:
+            matches = regex.search(byline)
+            if matches:
+                return matches.groups()
+        # If not matches, return full byline
+        return (byline,)
+        
     @property
     def data_list(self):
         """
@@ -116,6 +144,7 @@ class BaseFeed(object):
             data_dict = {
                 'source': self.source,
                 'title': entry.get('title'),
+                'authors': self.get_authors(entry),
                 'url': entry.get('link'),
                 'publication_date': self.clean_pub_date(entry),
                 'description': entry.get('summary') or "",
