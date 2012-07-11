@@ -1,6 +1,6 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-PRODUCTION = False, DEVELOPMENT = True
+PRODUCTION, DEVELOPMENT = (False, True)
 
 DATABASES = {
     'default': {
