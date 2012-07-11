@@ -10,8 +10,7 @@ class NYTimesParser(BaseParser):
             {"class": "entry-content"}
         ]
 
-    @property
-    def full_url(self):
+    def get_response(self):
         # We use the requests library to return the full URL.
         r = requests.get(self.url)
-        return r.url + "&pagewanted=all"
+        return requests.get(r.url, params={"pagewanted":"all"})

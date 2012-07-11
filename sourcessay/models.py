@@ -46,8 +46,8 @@ class Source(models.Model):
                 continue
             parsed = self.parse(news_outlet, url)
             outlet_obj = Outlet.objects.get(url=outlet_url)
-            print parsed.full_url
             anonymous = parsed.uses_anonymous()
+            print parsed.full_url
             print anonymous
             if not anonymous:
                 continue

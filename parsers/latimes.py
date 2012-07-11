@@ -1,4 +1,3 @@
-import urllib2
 import requests
 from parsers.base import BaseParser
 from BeautifulSoup import BeautifulSoup
@@ -11,14 +10,13 @@ class LATimesParser(BaseParser):
             {"class": "entry-body"},
         ]
 
-    @property
-    def full_url(self):
+    def get_response(self):
         # We use the requests library to return the full URL.
         # then search the page for the 'single page' URL if it's 
         # got one.
         r = requests.get(self.url)
-        soup = BeautifulSoup(urllib2.urlopen(r.url))
+        soup = BeautifulSoup(r.text)
         for s in soup.findAll("a"):
             if "single page" in s.contents:
-                return "http://www.latimes.com%s" % s['href']
-        return r.url
+                return requests.get("http://www.latimes.com%s" % s['href'])
+        return r

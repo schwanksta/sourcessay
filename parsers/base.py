@@ -2,7 +2,7 @@ import re
 import pytz
 import random
 import string
-import urllib2
+import requests
 import feedparser
 from datetime import datetime
 from django.conf import settings
@@ -16,24 +16,26 @@ LOCAL = pytz.timezone(settings.TIME_ZONE)
 class BaseParser(object):
     def __init__(self, url):
         self.url = url
+        self.full_url = url
         self.content_tags = [
             {"id": "content"}
         ]
 
-    @property
-    def full_url(self):
+    def get_response(self):
         """
         Replace this with a method to get a full-text
         page, if needed.
         """
-        return self.url
+        return requests.get(self.url)
 
     def get_content(self):
         """
         This method should return a string that contains 
         just the main article content.
         """
-        soup = BeautifulSoup(urllib2.urlopen(self.full_url))
+        response = self.get_response()
+        self.full_url = response.url
+        soup = BeautifulSoup(response.text)
         for tag in self.content_tags:
             content = soup.find("div", tag)
             if content:
@@ -44,10 +46,12 @@ class BaseParser(object):
         """
         Returns the phrase used or False if it can't find one.
         """
-        content = self.get_content().lower()
-        for phrase in signs_of_weakness:
-            if phrase in content:
-                return phrase
+        content = self.get_content()
+        if content:
+            content = content.lower()
+            for phrase in signs_of_weakness:
+                if phrase in content:
+                    return phrase
         return False
 
 
@@ -104,7 +108,9 @@ class BaseFeed(object):
             return None
     
     def get_authors(self, e):
-        byline = e.get('author')
+        byline = e.get('author', None)
+        if not byline: 
+            return None
         if not "By" in byline:
             # This is kinda crazy looking, but the 
             # [i for s in str for i in s] will flatten a list of lists,
