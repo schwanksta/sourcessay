@@ -7,5 +7,5 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', ListView.as_view(model=Item, template_name="index.html"), name='index'),
-    url(r'^admin/', include(admin.site.urls)),
+    #url(r'^admin/', include(admin.site.urls)),
 )

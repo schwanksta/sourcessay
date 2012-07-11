@@ -65,8 +65,7 @@ class Source(models.Model):
                 by, c = Author.objects.get_or_create(name=byline.title(), news_outlet=outlet_obj)
                 if c: by.save()
                 i.authors.add(by)
-            
-    
+
     def __unicode__(self):
         return self.name
 
