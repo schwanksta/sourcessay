@@ -51,7 +51,7 @@ class Source(models.Model):
             print anonymous
             if not anonymous:
                 continue
-            if Item.objects.filter(url=url):
+            if Item.objects.filter(url=parsed.full_url):
                 continue
             i = Item(
                 url = parsed.full_url,
