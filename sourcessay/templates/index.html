@@ -2,14 +2,12 @@
 {% block content %}
     {% for object in object_list %}
         <div class="well">
-            <h3><a href="{{object.url}}">{{object.title}}</a> <span class="label label-inverse">{{object.news_outlet.url}}</label></h3> 
-            <table class="table table-condensed" style="margin-bottom:5px; margin-top:5px;">
-            <tr>
-                <td><span>{{object.get_byline}}</span></td>
-                <td>&ldquo;{{object.line_used}}&rdquo;</td>
-                <td><span class="timestamp">{{object.pub_date|timesince}} ago</span></td>
-            </tr>
-            </table>
+            <h3><a href="{{object.url}}">{{object.title}}</a> <span class="label label-inverse">{{object.news_outlet.url}}</span></h3>
+            <ul class="unstyled">
+                <li style="padding-bottom:5px"><span>{{object.get_byline}}</span> | 
+                    <span>&ldquo;{{object.line_used}}&rdquo;</span></li>
+                <li><span class="timestamp">{{object.pub_date|timesince}} ago</span></li>
+            </ul>
         </div>
     {% endfor %}
 {% endblock %}
