@@ -3,7 +3,7 @@
     {% for object in object_list %}
         <div class="well">
             <h3><a href="{{object.url}}">{{object.title}}</a> <span class="label label-inverse">{{object.news_outlet.url}}</label></h3> 
-            <table class="table table-bordered table-condensed" style="margin-bottom:5px">
+            <table class="table table-condensed" style="margin-bottom:5px; margin-top:5px;">
             <tr>
                 <td><span>{{object.get_byline}}</span></td>
                 <td>&ldquo;{{object.line_used}}&rdquo;</td>
