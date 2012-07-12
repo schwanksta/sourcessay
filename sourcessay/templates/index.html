@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
     {% for object in object_list %}
-        <ul>
-            <div>
-                <h3><a href="{{object.url}}">{{object.title}}</a> ({{object.news_outlet.url}})</h3> 
-                <p>{{object.get_byline}}</p>
-                <p>"{{object.line_used}}"</p>
-            </div>
-        </ul>
+        <div class="well">
+            <h3><a href="{{object.url}}">{{object.title}}</a> <span class="label label-inverse">{{object.news_outlet.url}}</label></h3> 
+            <table class="table table-bordered table-condensed" style="margin-bottom:5px">
+            <tr>
+                <td><span>{{object.get_byline}}</span></td>
+                <td>&ldquo;{{object.line_used}}&rdquo;</td>
+                <td><span class="timestamp">{{object.pub_date|timesince}} ago</span></td>
+            </tr>
+            </table>
+        </div>
     {% endfor %}
 {% endblock %}
