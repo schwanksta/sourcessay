@@ -58,7 +58,8 @@ class Source(models.Model):
                 title = data.get('title'),
                 news_outlet = outlet_obj,
                 source_feed = data.get('source'),
-                line_used = anonymous
+                line_used = anonymous,
+                pub_date = data.get('publication_date')
             )
             i.save()
             for byline in data.get('authors'):
@@ -91,6 +92,10 @@ class Item(models.Model):
     title = models.CharField(max_length=500)
     url = models.CharField(max_length=500)
     line_used = models.CharField(max_length=255)
+    pub_date = models.DateTimeField()
+
+    class Meta:
+        ordering = ('-pub_date',)
 
     def get_byline(self):
         return "By " + ", ".join([str(o) for o in self.authors.all()])
