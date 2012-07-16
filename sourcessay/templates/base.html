@@ -37,6 +37,24 @@
             {% block content %}
             {% endblock %}
             </div>
+            <div class="span3">
+                <div class="well relative">
+                    <h4>Top authors</h4>
+                    <ul>
+                    {% for author in top_authors %}
+                        <li>{{author}} ({{author.item__count}})</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                <div class="well relative">
+                    <h4>Top outlets</h4>
+                    <ul>
+                    {% for outlet in top_outlets %}
+                        <li>{{outlet}} ({{outlet.item__count}})</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </body>
