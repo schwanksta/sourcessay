@@ -1,6 +1,6 @@
 import re
 
-# Original list lifted from March Schaver's
+# Original list lifted from Mark Schaver's
 # Anonymous Source Tracker: http://inkstainedwretch.com/anonymous
 # and modified with my own additions
 
