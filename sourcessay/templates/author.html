@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block header %}
+    <h1>Articles by {{ author.name }} using anonymous sourcing</h1>
+    <h2>Written for {{ author.news_outlet.name }}</h2>
+{% endblock %}
+{% block content %}
+    {% for object in object_list %}
+        <div class="well relative">
+            <span class="label label-info source-flag">{{object.news_outlet.url}}</span>
+            <h3><a href="{{object.url}}">{{object.title}}</a></h3>
+            <ul class="unstyled">
+                <li style="padding-bottom:5px">
+                    <span>{{object.get_byline}}</span> | 
+                    <span>&ldquo;{{object.line_used}}&rdquo;</span>
+                </li>
+                <li><span class="timestamp">{{object.pub_date|timesince}} ago</span></li>
+            </ul>
+        </div>
+    {% endfor %}
+{% endblock %}

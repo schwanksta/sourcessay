@@ -47,8 +47,6 @@ class Source(models.Model):
             parsed = self.parse(news_outlet, url)
             outlet_obj = Outlet.objects.get(url=outlet_url)
             anonymous = parsed.uses_anonymous()
-            print parsed.full_url
-            print anonymous
             if not anonymous:
                 continue
             if Item.objects.filter(url=parsed.full_url):
@@ -80,7 +78,13 @@ class Outlet(models.Model):
 
 class Author(models.Model):
     name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255)
     news_outlet = models.ForeignKey(Outlet)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(Author, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return self.name
