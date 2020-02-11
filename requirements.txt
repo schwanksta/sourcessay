@@ -1,5 +1,5 @@
 BeautifulSoup==3.2.1
-Django==1.4
+Django==1.11.28
 certifi==0.0.8
 chardet==1.0.1
 feedparser==5.1.2
