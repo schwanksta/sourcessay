@@ -1,6 +1,6 @@
 BeautifulSoup==3.2.1
 Django==1.4
-certifi==0.0.8
+certifi==2022.12.7
 chardet==1.0.1
 feedparser==5.1.2
 oauthlib==0.1.3
